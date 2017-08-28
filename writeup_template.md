@@ -43,7 +43,11 @@ Here is an example of how to include an image in your writeup.
 ![alt text][image1]
 
 #### 1. Populate the `process_image()` function with the appropriate analysis steps to map pixels identifying navigable terrain, obstacles and rock samples into a worldmap.  Run `process_image()` on your test data using the `moviepy` functions provided to create video output of your result. 
-And another! 
+
+* There are 2 videos in output folder
+1. **_test_mapping.mp4_** - based on provided test data
+2. **_test_mapping2.mp4_** - based on my recording
+
 
 ![alt text][image2]
 ### Autonomous Navigation and Mapping
@@ -58,38 +62,40 @@ And another!
 
 #### 1. Rover states
 Rover is considered as state machine with the following states
-	Main states:
-	1. Forward
-	2. Stop
-	3. Sample spotted
-	Additional states:
-	4. Stuck
-	5. Circling
+* **Main states:**
+1. Forward
+2. Stop
+3. Sample spotted
+* **Additional states:**
+4. Stuck
+5. Circling
 
 ##### Forward
 * If rover is not stuck and not circling, check if there is enough of navigable terrain;
 ##### Stop
 * If robot is not stuck, spin unless there are enough of navigable terrain and go;
 ##### Sample spotted
-* If there are distances from sample (obtained in perception step) then set navigation angle to the direction of sample, and decrease velocity when approaching 
+* If there are distances from sample (obtained in perception step) then set navigation angle to the direction of sample, and decrease velocity when approaching;
 
 ##### Stuck
-* "Stuck" here means that ground velocity of the rover does not change within specified timeinterval (defined as number of measurement cycles). After rover is marked as "stuck", recovery operation is performed (described below)
+* "Stuck" here means that ground velocity of the rover does not change within specified timeinterval (defined as number of measurement cycles). After rover is marked as "stuck", recovery operation is performed (described below);
 
 ##### Circling
-* Circling is a form of "stuck" when rover is unable to change direction, resulting in it driving in circles indefinitely (usually happens on wide open spaces). Rover marked as "Circling" when steering angle does not change from -15 or 15 within specified time interval (defined as number of measurement cycles), circling recovery is performed in this case (described below)
+* Circling is a form of "stuck" when rover is unable to change direction, resulting in it driving in circles indefinitely (usually happens on wide open spaces). Rover marked as "Circling" when steering angle does not change from -15 or 15 within specified time interval (defined as number of measurement cycles), circling recovery is performed in this case (described below);
 
 #### 2. Robot image processing
 
+
+
 #### 3. Direction choosing and correction
-I created additional Rover attribute "visited_map" which is 20x20 array of ints. Map is essentinally increased scale (x10) world map, each cell stores the number of perception cycles rover was in the map sector. The plan was to use this map to calculate priority when choosing steer direction.  Currently only the cells which are adjacent to Rover's position are checked to calculate priority, which is obviously not enough.
+I created additional Rover attribute "visited_map" which is 20x20 array of ints. Visited Map is essentinally increased scale (x10) world map, each cell stores the number of perception cycles rover was in the map sector. The plan was to use this map to calculate priority when choosing steer direction.  Currently only the cells which are adjacent to Rover's position are checked to calculate priority, which is obviously not enough.
 	
-#### 4. Recovery strategy
+#### 4. Recovery strategies
 ##### 1. Stuck recovery 
-* To "unstuck" rover, its throttle is set to negative number (driving backwards) for a specified time interval (defined as a number of measurment cycles)
+* To "unstuck" rover, its throttle is set to negative number (driving backwards) for a specified time interval (defined as a number of measurment cycles);
 
 ##### 2. Circling recovery 
-* To "uncircle" rover, its steering angle is reset and mode is set to "stop" allowing it to pick new direction
+* To "uncircle" rover, its steering angle is reset and mode is set to "stop" allowing it to pick new direction;
 
 #### 5. Potential improvements
 * Tune recovery strategies
