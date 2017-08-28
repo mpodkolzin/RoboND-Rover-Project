@@ -111,13 +111,13 @@ def decision_step(Rover):
                     Rover.brake = 0
                     # Turn range is +/- 15 degrees, when stopped the next line will induce 4-wheel turning
                     Rover.steer = -15 # Could be more clever here about which way to turn
-                    if(len(Rover.nav_angles) > 0):
-                        if(abs(np.min(Rover.nav_angles)) < abs(np.max(Rover.nav_angles))):
-                            Rover.steer = -15 # Could be more clever here about which way to turn
-                        else:
-                            Rover.steer = 15 # Could be more clever here about which way to turn
-                    else:
-                        Rover.steer = random.choice[-1, 1] * 15
+                    #if(len(Rover.nav_angles) > 0):
+                    #    if(abs(np.min(Rover.nav_angles)) < abs(np.max(Rover.nav_angles))):
+                    #        Rover.steer = -15 # Could be more clever here about which way to turn
+                    #    else:
+                    #        Rover.steer = 15 # Could be more clever here about which way to turn
+                    #else:
+                    #    Rover.steer = random.choice[-1, 1] * 15
 
                 if (len(Rover.nav_angles) >= Rover.go_forward):
                     # Set throttle back to stored value

@@ -124,7 +124,7 @@ def perception_step(Rover):
     #if Rover.roll > 0:
     #    print('rotating image')
     #    threshed_navigable = rotate_image(threshed_navigable, -Rover.roll)
-    threshed_rock = color_thresh(warped_navigable, (120, 100, 0), (250, 200, 90))
+    #threshed_rock = color_thresh(warped_navigable, (120, 100, 0), (250, 200, 90))
     threshed_rock = color_thresh(warped_navigable, (100, 100, 20), (255, 255, 30))
     threshed_obstacle = np.logical_not(threshed_navigable).astype(np.int)
 

@@ -67,9 +67,9 @@ Rover is considered as state machine with the following states
 	5. Circling
 
 ##### Forward
-	If rover is not stuck and not circling, check if there is enough of navigable terrain
+	If rover is not stuck and not circling, check if there is enough of navigable terrain;
 ##### Stop
-	If robot is not stuck spin unless there are enough of navigable terrain and go
+	If robot is not stuck, spin unless there are enough of navigable terrain and go;
 ##### Sample spotted
 	If there are distances from sample (obtained in perception step) then set navigation angle to the direction of sample, and decrease velocity when approaching 
 
@@ -82,13 +82,19 @@ Rover is considered as state machine with the following states
 #### 2. Robot image processing
 
 #### 3. Direction choosing and correction
+	I created additional Rover attribute "visited_map" which is 20x20 array of ints. Map is essentinally increased scale (x10) world map, each cell stores the number of perception cycles rover was in the map sector. The plan was to use this map to calculate priority when choosing steer direction.  Currently only the cells which are adjacent to Rover's position are checked to calculate priority, which is obviously not enough.
+	
 #### 4. Recovery strategy
 ##### 1. Stuck recovery 
-	To "unstuck" rover, it's throttle is set to negative number (driving backwards) for a specified time interval (defined as a number of measurment cycles)
+	To "unstuck" rover, its throttle is set to negative number (driving backwards) for a specified time interval (defined as a number of measurment cycles)
 ##### 2. Circling recovery 
-	To "uncircle" rover, it's steering angle is reset and mode is set to "stop" allowing it to pick new direction
+	To "uncircle" rover, its steering angle is reset and mode is set to "stop" allowing it to pick new direction
 
 #### 5. Potential improvements
+	1. Tune recovery strategies
+	2. Direction prioritization is rather primitive. (TODO: write more here). Some geofencing might be used here
+	3. Use camera image preprocessing to compensate roll and pitch angles, instead of discarding images where these angles beyond threshhold. I actually tried to compensate roll using OpenCV warpAffine method, but due to lack of experience with image processing did not get desired results
+	4. Sample spotting and collection routines need improvement. It's possible to miss samples when setting rover throttle to higher numbers
 
 
 
