@@ -55,6 +55,22 @@ And another!
 
 **Note: running the simulator with different choices of resolution and graphics quality may produce different results, particularly on different machines!  Make a note of your simulator settings (resolution and graphics quality set on launch) and frames per second (FPS output to terminal by `drive_rover.py`) in your writeup when you submit the project so your reviewer can reproduce your results.**
 
+
+#### 1. Rover is a state machine
+Rover is considered as state machine with the following states
+	Main states:
+	** 1) Forward
+	** 2) Stop
+	** 3) Sample spotted
+	Additional states:
+	** 4) Stuck
+	** 5) Circling
+
+##### 2. Direction choosing and correction
+##### 2. Direction choosing and correction
+##### 2. Direction choosing and correction
+
+
 Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
 
 
