@@ -56,22 +56,39 @@ And another!
 **Note: running the simulator with different choices of resolution and graphics quality may produce different results, particularly on different machines!  Make a note of your simulator settings (resolution and graphics quality set on launch) and frames per second (FPS output to terminal by `drive_rover.py`) in your writeup when you submit the project so your reviewer can reproduce your results.**
 
 
-#### 1. Rover is a state machine
+#### 1. Rover states
 Rover is considered as state machine with the following states
 	Main states:
-	** 1) Forward
-	** 2) Stop
-	** 3) Sample spotted
+	1. Forward
+	2. Stop
+	3. Sample spotted
 	Additional states:
-	** 4) Stuck
-	** 5) Circling
+	4. Stuck
+	5. Circling
 
-##### 2. Direction choosing and correction
-##### 2. Direction choosing and correction
-##### 2. Direction choosing and correction
+##### Forward
+	If rover is not stuck and not circling, check if there is enough of navigable terrain
+##### Stop
+	If robot is not stuck spin unless there are enough of navigable terrain and go
+##### Sample spotted
+	If there are distances from sample (obtained in perception step) then set navigation angle to the direction of sample, and decrease velocity when approaching 
 
+##### Stuck
+	"Stuck" here means that ground velocity of the rover does not change within specified timeinterval (defined as number of measurement cycles). After rover is marked as "stuck", recovery operation is performed (described below)
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+##### Circling
+	Circling is a form of "stuck" when rover is unable to change direction, resulting in it driving in circles indefinitely (usually happens on wide open spaces). Rover marked as "Circling" when steering angle does not change from -15 or 15 within specified time interval (defined as number of measurement cycles), circling recovery is performed in this case (described below)
+
+#### 2. Robot image processing
+
+#### 3. Direction choosing and correction
+#### 4. Recovery strategy
+##### 1. Stuck recovery 
+	To "unstuck" rover, it's throttle is set to negative number (driving backwards) for a specified time interval (defined as a number of measurment cycles)
+##### 2. Circling recovery 
+	To "uncircle" rover, it's steering angle is reset and mode is set to "stop" allowing it to pick new direction
+
+#### 5. Potential improvements
 
 
 
