@@ -117,10 +117,10 @@ def perception_step(Rover):
 
     warped_navigable = perspect_transform(Rover.img, source, destination)
     threshed_navigable = color_thresh(warped_navigable, (160, 160, 160))
-    #if Rover.roll > 0:
-    #    print('rotating image')
-    #    angle = Rover.roll % 360-360
-    #    Rover.img = rotate_image(Rover.img, -angle)
+    if Rover.roll != 0:
+        print('rotating image')
+        angle = Rover.roll % 360-360
+        Rover.img = rotate_image(Rover.img, -angle)
     #if Rover.roll > 0:
     #    print('rotating image')
     #    threshed_navigable = rotate_image(threshed_navigable, -Rover.roll)
@@ -152,8 +152,8 @@ def perception_step(Rover):
     Rover.visited_map[y_vis, x_vis] += 1
     Rover.worldmap[y_world_rock, x_world_rock, 1] += 1
     #Update rover worldmap
-    if((-1 <= (Rover.roll % 360-360) <= 1) and (-1 <= (Rover.pitch % 360-360) <= 1)):
-    #if -1 <= (Rover.pitch % 360-360) <= 1:
+    #if((-1 <= (Rover.roll % 360-360) <= 1) and (-1 <= (Rover.pitch % 360-360) <= 1)):
+    if -1 <= (Rover.pitch % 360-360) <= 1:
         Rover.worldmap[y_world, x_world, 2] += 1
         Rover.worldmap[y_world_obst, x_world_obst, 0] += 1
 
