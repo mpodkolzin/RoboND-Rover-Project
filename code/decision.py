@@ -9,8 +9,8 @@ def decision_step(Rover):
            
         if Rover.mode == 'sample_spotted':
             print('sample spotted')
-            if is_stuck(Rover):
-                Rover.mode = 'stuck'
+            #if is_stuck(Rover):
+            #    Rover.mode = 'stuck'
             if Rover.near_sample:
                 Rover.brake = Rover.brake_set
                 if Rover.vel == 0 and not Rover.picking_up:
