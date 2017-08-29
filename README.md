@@ -17,13 +17,13 @@ Please see next section for detailed description
 
 
 * The following steps were taken to process rover vision image and update Rover object attributes
-1. To compensate Rover rolling, image is rotated around center in the direction opposite to roll angle. (please see rotate_image helper function). To get roll and pitch angles I had to add correspongin attributes to Databucket class
-2. To get rover map view applied perspective transorm
-3. To get navigable area, applied thresholding (160,160,160) to warped image
-4. To get obstacle area, inverted previously obtained navigable area
-5. To get sample location, applied interval threshholding to warped image, with the following interval low = (100,100,20), high = (255,255,30).
+1. To compensate Rover rolling, image is rotated around center in the direction opposite to roll angle. (please see rotate_image helper function). To get roll and pitch angles I had to add corresponding attributes to Databucket class
+2. To get rover map view, perspective transform was applied
+3. To get navigable area, thresholding (160,160,160) was applied to warped image
+4. To get obstacle area, previously obtained navigable area has been inverted (using numpy logical_not function)
+5. To get sample location, interval threshholding was applied to warped image, with the following interval low = (100,100,20), high = (255,255,30).
 
-* There are 2 videos in output folder
+* There are 2 videos in output the folder:
 1. **_test_mapping.mp4_** - based on provided test data
 2. **_test_mapping2.mp4_** - based on my recording
 
@@ -35,8 +35,11 @@ Please see next section for detailed description
 
 #### 2. Launching in autonomous mode your rover can navigate and map autonomously.  Explain your results and how you might improve them in your writeup.  
 
-**Note: running the simulator with different choices of resolution and graphics quality may produce different results, particularly on different machines!  Make a note of your simulator settings (resolution and graphics quality set on launch) and frames per second (FPS output to terminal by `drive_rover.py`) in your writeup when you submit the project so your reviewer can reproduce your results.**
 
+##### Simulator settings
+1. Resolution: 		**1024x768**
+2. Graphic quality:	**Good** 
+3. FPS:			**~18**
 
 #### 1. Rover states
 Rover is considered as state machine with the following states
