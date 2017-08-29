@@ -34,15 +34,26 @@
 
 #### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  
 
-You're reading it!
+You're reading it! _Sorry in advance for my crippled English_
 
 ### Notebook Analysis
 #### 1. Run the functions provided in the notebook on test images (first with the test data provided, next on data you have recorded). Add/modify functions to allow for color selection of obstacles and rock samples.
-Here is an example of how to include an image in your writeup.
+
+* To successfully identify rock samples, color_thresh function had to be modified to be able to use interval rather then only low threshold values. 
+Please see next section for detailed description
+
 
 ![alt text][image1]
 
-#### 1. Populate the `process_image()` function with the appropriate analysis steps to map pixels identifying navigable terrain, obstacles and rock samples into a worldmap.  Run `process_image()` on your test data using the `moviepy` functions provided to create video output of your result. 
+#### 2. Populate the `process_image()` function with the appropriate analysis steps to map pixels identifying navigable terrain, obstacles and rock samples into a worldmap.  Run `process_image()` on your test data using the `moviepy` functions provided to create video output of your result. 
+
+
+* The following steps were taken to process rover vision image and update Rover object attributes
+1. To compensate Rover rolling, image is rotated around center in the direction opposite to roll angle. (please see rotate_image helper function). To get roll and pitch angles I had to add correspongin attributes to Databucket class
+2. To get rover map view applied perspective transorm
+3. To get navigable area, applied thresholding (160,160,160) to warped image
+4. To get obstacle area, inverted previously obtained navigable area
+5. To get sample location, applied interval threshholding to warped image, with the following interval low = (100,100,20), high = (255,255,30).
 
 * There are 2 videos in output folder
 1. **_test_mapping.mp4_** - based on provided test data
@@ -85,10 +96,15 @@ Rover is considered as state machine with the following states
 
 #### 2. Robot image processing
 
-
+* The following steps were taken to process rover vision image and update Rover object attributes
+1. To compensate Rover rolling, image is rotated around center in the direction opposite to roll angle
+2. To get rover map view applied perspective transorm
+3. To get navigable area, applied thresholding (160,160,160) to warped image
+4. To get obstacle area, inverted previously obtained navigable area
+5. To get sample location, applied interval threshholding to warped image, with the following interval low = (100,100,20), high = (255,255,30). (these thresholds definitely need tuning:) )
 
 #### 3. Direction choosing and correction
-I created additional Rover attribute "visited_map" which is 20x20 array of ints. Visited Map is essentinally increased scale (x10) world map, each cell stores the number of perception cycles rover was in the map sector. The plan was to use this map to calculate priority when choosing steer direction.  Currently only the cells which are adjacent to Rover's position are checked to calculate priority, which is obviously not enough.
+* I created additional Rover attribute "visited_map" which is 20x20 array of ints. Visited Map is essentinally increased scale (x10) world map, each cell stores the number of perception cycles rover was in the map sector. The plan was to use this map to calculate priority when choosing steer direction.  Currently only the cells which are adjacent to Rover's position are checked to calculate priority, which is obviously not enough.
 	
 #### 4. Recovery strategies
 ##### 1. Stuck recovery 
@@ -99,12 +115,12 @@ I created additional Rover attribute "visited_map" which is 20x20 array of ints.
 
 #### 5. Potential improvements
 * Tune recovery strategies
-* Direction prioritization is rather primitive. (TODO: write more here). Some geofencing might be used here
-* Use camera image preprocessing to compensate roll and pitch angles, instead of discarding images where these angles beyond threshhold. I actually tried to compensate roll using OpenCV warpAffine method, but due to lack of experience with image processing did not get desired results
-* Sample spotting and collection routines need improvement. It's possible to miss samples when setting rover throttle to higher numbers
+* Direction prioritization is rather primitive. It only checks cells adjacent to current rover position. Some geofencing might be used here.
+* Turn direction in "stop" mode is hardcoded, need better direction prioritization logic.
+* Use camera image preprocessing to compensate roll and pitch angles, instead of discarding images where these angles beyond threshhold. I actually try to compensate roll using OpenCV warpAffine method, but not sure if it's optimal solution; 
+* Sample spotting and collection routines need improvement. 
+1. It's possible to miss samples when setting rover throttle to higher numbers;
+2. Rover can "forget" where sample was if for some reason it gets off sight. Need to store last spotted sample coordinated until collected
 
-
-
-![alt text][image3]
 
 

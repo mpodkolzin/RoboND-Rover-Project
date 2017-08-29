@@ -3,25 +3,14 @@ from perception import *
 import random
 
 
-picking_up = False
-last_vel = None
-
-# This is where you can build a decision tree for determining throttle, brake and steer 
-# commands based on the output of the perception_step() function
 def decision_step(Rover):
-    # Implement conditionals to decide what to do given perception data
-    # Here you're all set up with some basic functionality but you'll need to
-    # improve on this decision tree to do a good job of navigating autonomously!
 
-    # Example:
-    # Check if we have vision data to make decisions with
     if Rover.nav_angles is not None:
-        # Check for Rover.mode status
-            
+           
         if Rover.mode == 'sample_spotted':
-            print('SAMPLE SPOTTED')
-            #if is_stuck(Rover):
-            #    Rover.mode = 'stuck'
+            print('sample spotted')
+            if is_stuck(Rover):
+                Rover.mode = 'stuck'
             if Rover.near_sample:
                 Rover.brake = Rover.brake_set
                 if Rover.vel == 0 and not Rover.picking_up:
@@ -29,7 +18,6 @@ def decision_step(Rover):
                 elif Rover.picking_up:
                     Rover.samples_collected += 1
                     Rover.mode = 'stop'
-
             elif(Rover.sample_angles is not None and len(Rover.sample_angles) > 0):
                 sample_dist = np.min(Rover.sample_dists)
                 print(sample_dist)
@@ -42,6 +30,7 @@ def decision_step(Rover):
                     pass
                     
                 Rover.steer = np.clip(np.mean(Rover.sample_angles * 180 / np.pi), -15, 15)
+
             elif len(Rover.sample_angles) == 0:
                 #Rover.mode = 'forward'
                 pass
@@ -53,7 +42,6 @@ def decision_step(Rover):
         elif Rover.mode == 'circling':
             print('circling')
             perform_circling_recovery(Rover)
-            
         elif Rover.mode == 'forward':
             print('forward')
             # Check the extent of navigable terrain
@@ -62,7 +50,6 @@ def decision_step(Rover):
                 Rover.mode = 'stuck'
             elif is_circling(Rover):
                 Rover.mode = 'circling'
-
             elif(len(Rover.sample_dists) > 0):
                 Rover.mode = 'sample_spotted'
                 Rover.brake = Rover.brake_set
@@ -109,7 +96,6 @@ def decision_step(Rover):
                     Rover.throttle = 0
                     # Release the brake to allow turning
                     Rover.brake = 0
-                    # Turn range is +/- 15 degrees, when stopped the next line will induce 4-wheel turning
                     Rover.steer = -15 # Could be more clever here about which way to turn
                     #if(len(Rover.nav_angles) > 0):
                     #    if(abs(np.min(Rover.nav_angles)) < abs(np.max(Rover.nav_angles))):
@@ -134,10 +120,6 @@ def decision_step(Rover):
         Rover.throttle = Rover.throttle_set
         Rover.steer = 0
         Rover.brake = 0
-        
-    # If in a state where want to pickup a rock send pickup command
-    #if Rover.near_sample and Rover.vel == 0 and not Rover.picking_up:
-    #    Rover.send_pickup = True
     
     return Rover
 
@@ -180,7 +162,7 @@ def perform_circling_recovery(Rover):
     print('Trying to recover from circling')
     Rover.mode = 'stop'
     Rover.circling_cycles = 0
-    Rover.steer = -Rover.steer#random.randint(-15, 15)
+    Rover.steer = random.randint(-15, 15)
 
 def get_direction(Rover):
     x = np.floor_divide(Rover.pos[0], 10).astype(np.int)
@@ -211,22 +193,6 @@ def get_direction(Rover):
         Rover.steer += 10
     elif(x_vis != x):
         Rover.steer -= 10
-    #if  0 <= (Rover.yaw + Rover.steer) < 90:
-    #    return np.array([Rover.visited_map[y+1, x],
-    #                    Rover.visited_map[y+1, x+1],
-    #                    Rover.visited_map[y, x+1]])
-    #elif 90 <= (Rover.yaw + Rover.steer) < 180:
-    #    return np.array([Rover.visited_map[y+1, x],
-    #                    Rover.visited_map[y+1, x-1],
-    #                    Rover.visited_map[y, x-1]])
-    #elif 180 <= (Rover.yaw + Rover.steer) < 270:
-    #    return np.array([Rover.visited_map[y, x-1],
-    #                    Rover.visited_map[y-1, x-1],
-    #                    Rover.visited_map[y-1, x]])
-    #else:
-    #    return np.array([Rover.visited_map[y, x+1],
-    #                    Rover.visited_map[y-1, x+1],
-    #                    Rover.visited_map[y-1, x]])
     
 
 

@@ -77,7 +77,6 @@ class RoverState():
         self.worldmap = np.zeros((200, 200, 3), dtype=np.float) 
         self.visited_map = np.zeros((20, 20), dtype=np.int) 
 
-        self.direction_weights = None
 
         self.samples_pos = None # To store the actual sample positions
         self.samples_to_find = 0 # To store the initial count of samples

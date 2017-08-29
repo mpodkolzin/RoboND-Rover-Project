@@ -96,10 +96,10 @@ def perspect_transform(img, src, dst):
     return warped
 
 def rotate_image(image, angle):
-    center = tuple(np.array(image.shape[0:2])/2)
-    rot_mat = cv2.getRotationMatrix2D(center,angle,1.0)
+    center = tuple(np.array(image.shape[0:2][::-1])/2)
+    rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
     return cv2.warpAffine(image, rot_mat,
-             image.shape[0:2],flags=cv2.INTER_LINEAR)
+             image.shape[0:2][::-1], flags=cv2.INTER_LINEAR)
 
 
 def get_visited_map(fidelity):
@@ -113,75 +113,53 @@ def get_visited_map(fidelity):
 # Apply the above functions in succession and update the Rover state accordingly
 def perception_step(Rover):
 
-
+    #rotate image to compensate Rover.roll
+    if Rover.roll != 0:
+        angle = abs(Rover.roll % 360 - 360)
+        Rover.img = rotate_image(Rover.img, -angle)
 
     warped_navigable = perspect_transform(Rover.img, source, destination)
     threshed_navigable = color_thresh(warped_navigable, (160, 160, 160))
-    if Rover.roll != 0:
-        print('rotating image')
-        angle = Rover.roll % 360-360
-        Rover.img = rotate_image(Rover.img, -angle)
-    #if Rover.roll > 0:
-    #    print('rotating image')
-    #    threshed_navigable = rotate_image(threshed_navigable, -Rover.roll)
-    #threshed_rock = color_thresh(warped_navigable, (120, 100, 0), (250, 200, 90))
-    threshed_rock = color_thresh(warped_navigable, (100, 100, 20), (255, 255, 30))
+    threshed_sample = color_thresh(warped_navigable, (100, 100, 20), (255, 255, 30))
     threshed_obstacle = np.logical_not(threshed_navigable).astype(np.int)
 
 
     #Update rover vision
 
-    Rover.vision_image[:, :, 0] = threshed_obstacle * 200
-    Rover.vision_image[:, :, 1] = threshed_rock * 200
-    Rover.vision_image[:, :, 2] = threshed_navigable * 200
+    Rover.vision_image[:, :, 0] = threshed_obstacle * 255
+    Rover.vision_image[:, :, 1] = threshed_sample * 255
+    Rover.vision_image[:, :, 2] = threshed_navigable * 255
 
     xpix, ypix = rover_coords(threshed_navigable)
     x_obst_pix, y_obst_pix = rover_coords(threshed_obstacle)
-    x_rock_pix, y_rock_pix = rover_coords(threshed_rock)
+    x_sample_pix, y_sample_pix = rover_coords(threshed_sample)
     
 
     
     x_world_obst, y_world_obst = pix_to_world(x_obst_pix, y_obst_pix, Rover.pos[0], Rover.pos[1], Rover.yaw, 200, 10)
-    x_world_rock, y_world_rock = pix_to_world(x_rock_pix, y_rock_pix, Rover.pos[0], Rover.pos[1], Rover.yaw, 200, 10)
+    x_world_sample, y_world_sample = pix_to_world(x_sample_pix, y_sample_pix, Rover.pos[0], Rover.pos[1], Rover.yaw, 200, 10)
     x_world, y_world = pix_to_world(xpix, ypix, Rover.pos[0], Rover.pos[1], Rover.yaw, 200, 10)
 
     
+    #get Rover coordinates in large scale Map (20x20)
     x_vis = np.floor_divide(Rover.pos[0],10).astype(np.int)
     y_vis = np.floor_divide(Rover.pos[1],10).astype(np.int)
     
     Rover.visited_map[y_vis, x_vis] += 1
-    Rover.worldmap[y_world_rock, x_world_rock, 1] += 1
     #Update rover worldmap
-    #if((-1 <= (Rover.roll % 360-360) <= 1) and (-1 <= (Rover.pitch % 360-360) <= 1)):
     if -1 <= (Rover.pitch % 360-360) <= 1:
         Rover.worldmap[y_world, x_world, 2] += 1
+        Rover.worldmap[y_world_sample, x_world_sample, 1] += 1
         Rover.worldmap[y_world_obst, x_world_obst, 0] += 1
 
 
-
-
     dists, angles = to_polar_coords(xpix, ypix)
-    fidelity = Rover.worldmap[y_world, x_world, 2]
-    #visited = get_visited_map(fidelity)
-    #print(visited)
+    sample_dists, sample_angles = to_polar_coords(x_sample_pix, y_sample_pix)
 
-    weights = np.dstack((dists, angles, fidelity))
-    Rover.direction_weights = weights[0,:,:]
-    #res = weights[0,:,:]
-    #res2 = res[res[:,1].argsort()]
-    #print(res2)
-
-    rock_dists, rock_angles = to_polar_coords(x_rock_pix, y_rock_pix)
-
-    Rover.sample_angles = rock_angles
-    Rover.sample_dists = rock_dists
-    
-
+    Rover.sample_angles = sample_angles
+    Rover.sample_dists = sample_dists
 
     Rover.nav_dists = dists
     Rover.nav_angles = angles
-
- 
-    
     
     return Rover
