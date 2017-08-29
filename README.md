@@ -68,13 +68,13 @@ Rover is considered as state machine with the following states
 
 * The following steps were taken to process rover vision image and update Rover object attributes
 1. To compensate Rover rolling, image is rotated around center in the direction opposite to roll angle
-2. To get rover map view applied perspective transorm
-3. To get navigable area, applied thresholding (160,160,160) to warped image
-4. To get obstacle area, inverted previously obtained navigable area
-5. To get sample location, applied interval threshholding to warped image, with the following interval low = (100,100,20), high = (255,255,30). (these thresholds definitely need tuning:) )
+2. To get rover map view, I applied perspective transorm
+3. To get navigable area, I applied thresholding (160,160,160) to warped image
+4. To get obstacle area, I inverted previously obtained navigable area
+5. To get sample location, I applied interval threshholding to warped image, with the following interval low = (100,100,20), high = (255,255,30). (these thresholds definitely need tuning:) )
 
 #### 3. Direction choosing and correction
-* I created additional Rover attribute "visited_map" which is 20x20 array of ints. Visited Map is essentinally increased scale (x10) world map, each cell stores the number of perception cycles rover was in the map sector. The plan was to use this map to calculate priority when choosing steer direction.  Currently only the cells which are adjacent to Rover's position are checked to calculate priority, which is obviously not enough.
+* Additional Rover attribute "visited_map" has been created which is 20x20 array of ints. Visited Map is essentinally increased scale (x10) world map, each cell stores the number of perception cycles rover was in the map sector. The plan was to use this map to calculate priority when choosing steer direction.  Currently only the cells which are adjacent to Rover's position are checked to calculate priority, which is obviously not enough.
 	
 #### 4. Recovery strategies
 ##### 1. Stuck recovery 
