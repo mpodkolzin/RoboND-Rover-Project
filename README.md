@@ -49,17 +49,17 @@ Rover is considered as state machine with the following states
 5. Circling
 
 ##### Forward
-* If rover is not stuck and not circling, check if there is enough of navigable terrain;
+* If Rover is not stuck and not circling, check if there is enough of navigable terrain;
 ##### Stop
-* If robot is not stuck, spin unless there are enough of navigable terrain and go;
+* If Rover is not stuck, spin unless there are enough of navigable terrain and go;
 ##### Sample spotted
 * If there are distances from sample (obtained in perception step) then set navigation angle to the direction of sample, and decrease velocity when approaching;
 
 ##### Stuck
-* "Stuck" here means that ground velocity of the rover does not change within specified timeinterval (defined as number of measurement cycles). After rover is marked as "stuck", recovery operation is performed (described below);
+* "Stuck" here means that ground velocity of the rover does not change within specified timeinterval (defined as number of measurement cycles). After rover is marked as "stuck", recovery operation is performed (described below); _stuck cycles_ and _stuck set_ attributes defined as part of RoverState object;
 
 ##### Circling
-* Circling is a form of "stuck" when rover is unable to change direction, resulting in it driving in circles indefinitely (usually happens on wide open spaces). Rover marked as "Circling" when steering angle does not change from -15 or 15 within specified time interval (defined as number of measurement cycles), circling recovery is performed in this case (described below);
+* Circling is a form of "stuck" when rover is unable to change direction, resulting in it driving in circles indefinitely (usually happens on wide open spaces). Rover marked as "Circling" when steering angle does not change from -15 or 15 within specified time interval (defined as number of measurement cycles), circling recovery is performed in this case (described below); _circling cycles_ and _circling set_ attributes defined as part of RoverState object
 
 #### 2. Robot image processing
 
