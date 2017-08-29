@@ -95,6 +95,7 @@ def perspect_transform(img, src, dst):
     
     return warped
 
+#https://stackoverflow.com/a/9042907/6661243
 def rotate_image(image, angle):
     center = tuple(np.array(image.shape[0:2][::-1])/2)
     rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
